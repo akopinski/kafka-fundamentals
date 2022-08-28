@@ -1,0 +1,90 @@
+version: '3.5'
+services:
+  zookeeper:
+    hostname: zookeeper
+    image: "confluentinc/cp-zookeeper:5.3.0"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    healthcheck: &health_check_options
+      test: nc -z localhost 2181 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 3s
+    networks:
+      - streams-net
+
+  kafka1:
+    image: "confluentinc/cp-enterprise-kafka:5.3.0"
+    hostname: kafka1
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_DOCKER://kafka1:9092,PLAINTEXT_LOCAL://localhost:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_DOCKER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_DOCKER:PLAINTEXT,PLAINTEXT_LOCAL:PLAINTEXT
+      KAFKA_METRIC_REPORTERS: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: "kafka1:9092"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    ports:
+      - 9093:9093
+    healthcheck:
+      <<: *health_check_options
+      test: kafka-topics --bootstrap-server kafka1:9092 --list
+    networks:
+      - streams-net
+
+  kafka2:
+    image: "confluentinc/cp-enterprise-kafka:5.3.0"
+    hostname: kafka2
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_DOCKER://kafka2:9092,PLAINTEXT_LOCAL://localhost:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_DOCKER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_DOCKER:PLAINTEXT,PLAINTEXT_LOCAL:PLAINTEXT
+      KAFKA_METRIC_REPORTERS: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: "kafka2:9092"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      KAFKA_CONFLUENT_METRICS_REPORTER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    ports:
+      - 9094:9094
+    healthcheck:
+      <<: *health_check_options
+      test: kafka-topics --bootstrap-server kafka2:9092 --list
+    networks:
+      - streams-net
+
+  tools:
+    hostname: tools
+    image: cnfltraining/training-tools:19.06
+    working_dir: /root/streams-app
+    command: /bin/bash
+    tty: true
+    volumes:
+      - ./kafka-cli-scripts:/root/streams-app
+    networks:
+      - streams-net
+    depends_on:
+      - "kafka1"
+      - "zookeeper"
+    healthcheck:
+      <<: *health_check_options
+      test: kafka-topics --bootstrap-server kafka1:9092 --list
+
+networks:
+  streams-net:

@@ -1,0 +1,10 @@
+
+=== TODO =================================
+- add tracks
+- add dependencies
+- write initial producer
+- write initial consumer
+
+
+=== DONE =================================
+- add docker-compose

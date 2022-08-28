@@ -1,0 +1,21 @@
+dependencies {
+    // This dependency is used by the application.
+    implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.2.1'
+
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'kafka.fundamentals.producer.ProducerApp'
+}
+
+run {
+    standardInput = System.in
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}

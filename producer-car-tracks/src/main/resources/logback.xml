@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+    <jmxConfigurator/>
+    <if condition='isDefined("LOG_HOST")'>
+        <then>
+            <appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
+                <graylogHost>${LOG_HOST}</graylogHost>
+                <graylogPort>${LOG_PORT}</graylogPort>
+                <maxChunkSize>508</maxChunkSize>
+                <encoder class="de.siegmar.logbackgelf.GelfEncoder">
+                    <includeRawMessage>true</includeRawMessage>
+                    <includeMarker>true</includeMarker>
+                    <includeMdcData>true</includeMdcData>
+                    <includeCallerData>true</includeCallerData>
+                    <includeRootCauseData>true</includeRootCauseData>
+                    <includeLevelName>true</includeLevelName>
+                    <shortPatternLayout class="ch.qos.logback.classic.PatternLayout">
+                        <pattern>%m%nopex</pattern>
+                    </shortPatternLayout>
+                    <fullPatternLayout class="ch.qos.logback.classic.PatternLayout">
+                        <pattern>%m</pattern>
+                    </fullPatternLayout>
+                    <staticField>appName:${APP_NAME}</staticField>
+                </encoder>
+            </appender>
+            <root level="debug">
+                <appender-ref ref="GELF"/>
+            </root>
+        </then>
+    </if>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <property name="LOG_DIR" value="./logs" />
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/car-tracks-producer.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hejwo.carstreams" level="${LOG_LEVEL:-INFO}" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.hejwo.carstreams.scalarocksdb" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="org.hejwo.carstreams" level="${LOG_LEVEL:-INFO}" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.hejwo.carstreams.scalarocksdb" level="${LOG_LEVEL:-DEBUG}" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="${LOG_LEVEL:-INFO}">
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

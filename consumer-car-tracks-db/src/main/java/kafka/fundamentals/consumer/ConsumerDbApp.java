@@ -25,10 +25,10 @@ public class ConsumerDbApp {
             for (int i = 0; i < 10; i++) {
                 final ConsumerRecords<Void, String> consumerRecords = consumer.poll(Duration.ofMillis(200));
 
-                System.out.println(String.format("Received %d records", consumerRecords.count()));
+                System.out.printf("Received %d records%n", consumerRecords.count());
 
                 consumerRecords.forEach(record -> {
-                    var recordsDesc = String.format("Consumer Record:(%d, %s, %d, %d)",
+                    var recordsDesc = String.format("Consumer Record:(%s, %s, %d, %d)",
                             record.key(), record.value(),
                             record.partition(), record.offset());
                     System.out.println(recordsDesc);

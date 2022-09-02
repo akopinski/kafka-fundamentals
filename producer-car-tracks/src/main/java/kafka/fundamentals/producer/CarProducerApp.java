@@ -40,24 +40,7 @@ public class CarProducerApp {
 
         }
 
-
-
-        Thread.sleep(4000);
-
-//        try(var producer = createProducer()) {
-//            for (int i = 0; i < 10; i++) {
-//                var record = new ProducerRecord<Void, Object>(TOPIC, CarProducerApp.getGreeting() + " ==> " + i);
-//                var metadata = producer.send(record).get();
-//
-//                var recordDesc = String.format("sent record(key=%s value=%s) meta(partition=%d, offset=%d)",
-//                        record.key(),
-//                        record.value(),
-//                        metadata.partition(),
-//                        metadata.offset());
-//
-//                System.out.println(recordDesc);
-//            }
-//        }
+        Thread.sleep(7000);
     }
 
     private static Producer<Void, Object> createProducer() {
@@ -66,7 +49,7 @@ public class CarProducerApp {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaExampleProducer");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomJsonSerializer.class.getName());
-//        props.put(ProducerConfig.ACKS_CONFIG, "1");
+        props.put(ProducerConfig.ACKS_CONFIG, "-1");
         return new KafkaProducer<>(props);
     }
 }

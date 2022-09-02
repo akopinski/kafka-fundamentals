@@ -1,10 +1,11 @@
 package kafka.fundamentals.consumer;
 
+import kafka.fundamentals.consumer.deserializers.CarPositionDeserializer;
+import kafka.fundamentals.consumer.domain.CarPosition;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.VoidDeserializer;
 
 import java.time.Duration;
@@ -23,7 +24,7 @@ public class ConsumerDbApp {
             startAtBeginning(consumer);
 
             for (int i = 0; i < 10; i++) {
-                final ConsumerRecords<Void, String> consumerRecords = consumer.poll(Duration.ofMillis(200));
+                final ConsumerRecords<Void, CarPosition> consumerRecords = consumer.poll(Duration.ofMillis(200));
 
                 System.out.printf("Received %d records%n", consumerRecords.count());
 
@@ -38,17 +39,17 @@ public class ConsumerDbApp {
 
     }
 
-    private static void startAtBeginning(Consumer<Void, String> consumer) {
+    private static void startAtBeginning(Consumer<Void, CarPosition> consumer) {
         consumer.poll(Duration.ZERO);
         consumer.seekToBeginning(consumer.assignment());
     }
 
-    private static Consumer<Void, String> createConsumer() {
+    private static Consumer<Void, CarPosition> createConsumer() {
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaExampleConsumer");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CarPositionDeserializer.class.getName());
         //TODO!!!
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");

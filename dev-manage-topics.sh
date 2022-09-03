@@ -23,6 +23,9 @@ function topicsCreate() {
 function topicsDelete() {
   docker exec -it $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic hello
   docker exec -it $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic car-tracks-raw
+
+  #docker exec -it dev_tools_1 curl -X DELETE http://schema-registry:8081/subjects/car-tracks-raw-key?permanent=true
+  #docker exec -it dev_tools_1 curl -X DELETE http://schema-registry:8081/subjects/car-tracks-raw-value?permanent=true
 }
 
 function topicsList() {

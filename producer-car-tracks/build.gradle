@@ -1,4 +1,10 @@
+plugins {
+    id 'com.commercehub.gradle.plugin.avro'
+}
+
 dependencies {
+    classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:0.13.0"
+
     // This dependency is used by the application.
     implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.21'
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.2.1'
@@ -15,6 +21,13 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    //AVRO!!
+    implementation "org.apache.avro:avro:1.11.0"
+}
+
+generateAvroJava {
+    source("${projectDir}/src/main/resources/avro")//sourcepath avrofile
 }
 
 application {

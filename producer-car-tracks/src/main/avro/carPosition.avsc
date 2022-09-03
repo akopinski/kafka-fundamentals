@@ -1,0 +1,16 @@
+{
+   "type":"record",
+   "name":"CarPosition",
+   "namespace":"kafka.fundamentals",
+   "fields":[
+      {
+         "name":"type1",
+         "type":"string"
+      },
+      {
+         "name":"type2",
+         "type":"string"
+      }
+   ]
+}
+//https://www.tutorialspoint.com/avro/avro_schemas.htm

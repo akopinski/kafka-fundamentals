@@ -8,8 +8,8 @@ TOOLS_CONTAINER=kafka-fundamentals_tools_1
 function topicsCreate() {
   docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello
 
-  TRACKS_REPLICATION_FACTOR=1
-  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor $TRACKS_REPLICATION_FACTOR --topic car-tracks-raw --config "min.insync.replicas=$TRACKS_REPLICATION_FACTOR"
+  TRACKS_REPLICATION_FACTOR=2
+  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 3 --replication-factor $TRACKS_REPLICATION_FACTOR --topic car-tracks-raw --config "min.insync.replicas=$TRACKS_REPLICATION_FACTOR"
 }
 
 function topicsDelete() {

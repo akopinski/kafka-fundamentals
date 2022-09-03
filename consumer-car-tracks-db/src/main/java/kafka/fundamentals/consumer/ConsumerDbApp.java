@@ -20,10 +20,12 @@ public class ConsumerDbApp {
         try (var consumer = createConsumer()) {
             // Subscribe to the topic.
             consumer.subscribe(Collections.singletonList(TOPIC));
-            startAtBeginning(consumer);
+            // startAtBeginning(consumer);
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++) { //pamiętajcie że w low-levelowym api taka pętla to często while(true). Chcemy cyklicznie polować.
                 final ConsumerRecords<Void, String> consumerRecords = consumer.poll(Duration.ofMillis(200));
+                //TODO: consumer poll
+                // mówi "przez 200 ms wysyłaj mi wiadomości"
 
                 System.out.printf("Received %d records%n", consumerRecords.count());
 
@@ -32,6 +34,18 @@ public class ConsumerDbApp {
                             record.key(), record.value(),
                             record.partition(), record.offset());
                     System.out.println(recordsDesc);
+                    // STRZEL DO BAZY W STANACH
+
+                    // chcesz potwierdzać offset po każdym procesowaniu? Polecam:
+                    // consumer.commitAsync(Map<TopicPartition, OffsetAndMetadata> offsets, callBack);
+                    // możemy powiedzieć które konkretnie offsety są przetworzone.
+                    // No ale pamiętajcie że to to zwolni Consumera. Wszystko ma swoją cenę.
+                });
+
+                consumer.commitAsync((offsets, orException) -> {
+                    // TUTAJ po przeprocesowaniu paczki recordów możemy oznaczyć ją jako przeczytaną.
+                    // ALE jeśli w ramach polla dostaniemy 20 recordów i dla 18 z nich uda się "STRZEL DO BAZY W STANACH" a potem posypie exepctionem
+                    // to potencjalnie znowu procesujemy te 18 wiadomości.
                 });
             }
         }
@@ -49,9 +63,11 @@ public class ConsumerDbApp {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaExampleConsumer");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, VoidDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        //TODO!!!
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        //TODO: Consumer consumowanie zawsze od początku
+        // poniższe flagi i startAtBeginning gwarantują że nie consumer croupa nie zapisuja offsetów i zawsze wystartuje od zera.
+        // props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        // props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         // Create the consumer using props.
         return new KafkaConsumer<>(props);

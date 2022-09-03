@@ -6,10 +6,18 @@ TOOLS_CONTAINER=kafka-fundamentals_tools_1
 
 #min.insync.replicas
 function topicsCreate() {
-  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello
+  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello --config "cleanup.policy=compact"
 
-  TRACKS_REPLICATION_FACTOR=1
-  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor $TRACKS_REPLICATION_FACTOR --topic car-tracks-raw --config "min.insync.replicas=$TRACKS_REPLICATION_FACTOR"
+  # TODO: tworzenie topicku
+  # jeśli ustawiamy:
+  #  - replication-factor to nie moze on byc wiekszy od liczby brokerów
+  #  - partitions to mamy juz dowolnosc
+  #  - min.insync.replicas: zaleca się żeby była o 1 mniejsza od replication-factor
+  # jeśli przy tworzeniu topicu nie ustawimy tych flag to wezmie defaulty podane dla brokera (patrz docker-compose)
+  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 3 --replication-factor 2 --topic car-tracks-raw --config "min.insync.replicas=1"
+
+  # TODO: jak zrobić compacted topic
+  #  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello --config "cleanup.policy=compact"
 }
 
 function topicsDelete() {

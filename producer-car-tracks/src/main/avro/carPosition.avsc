@@ -4,13 +4,16 @@
    "namespace":"kafka.fundamentals",
    "fields":[
       {
-         "name":"type1",
+         "name":"carId",
          "type":"string"
       },
       {
-         "name":"type2",
-         "type":"string"
+         "name":"latitude",
+         "type":"double"
       }
    ]
 }
 //https://www.tutorialspoint.com/avro/avro_schemas.htm
+
+
+//w repositories: gradlePluginPortal() , w plugins consumera, producra: id "com.github.davidmc24.gradle.plugin.avro" version "1.2.1"

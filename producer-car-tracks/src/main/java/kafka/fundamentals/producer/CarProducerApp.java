@@ -38,6 +38,7 @@ public class CarProducerApp {
             allPositionsStream()
                     .doOnNext(System.out::println)
                     .subscribe(position -> {
+
                         var record = new ProducerRecord<String, Object>(TOPIC, position.getCarId(), position);
                         try {
                             producer.send(record).get();
@@ -65,7 +66,7 @@ public class CarProducerApp {
         // kiedy mamy rety to dobrze jest włączyć deduplikację na poziomie brokera Kafki.
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "2");
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
 
         props.put(ProducerConfig.RETRIES_CONFIG, "6");
 

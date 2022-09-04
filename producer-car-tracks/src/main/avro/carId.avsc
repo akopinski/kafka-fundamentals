@@ -1,0 +1,12 @@
+{
+   "type":"record",
+   "name":"CarId",
+   "namespace":"kafka.fundamentals",
+   "fields":[
+      {
+         "name":"carId",
+         "type":"int"
+      }
+   ]
+}
+//https://www.tutorialspoint.com/avro/avro_schemas.htm

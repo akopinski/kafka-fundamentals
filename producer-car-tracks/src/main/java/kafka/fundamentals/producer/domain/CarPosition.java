@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @ToString
-@AllArgsConstructor
 public class CarPosition {
 
     private String carId;
@@ -21,4 +20,11 @@ public class CarPosition {
 
     private LocalDateTime time;
 
+    public CarPosition(String carId, Double latitude, Double longitude, Double elevation, LocalDateTime time) {
+        this.carId = carId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.elevation = elevation;
+        this.time = time;
+    }
 }

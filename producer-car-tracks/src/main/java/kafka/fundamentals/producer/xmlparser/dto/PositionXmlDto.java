@@ -22,4 +22,19 @@ public class PositionXmlDto {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private String time;
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Double getElevation() {
+        return elevation;
+    }
+
+    public String getTime() {
+        return time;
+    }
 }

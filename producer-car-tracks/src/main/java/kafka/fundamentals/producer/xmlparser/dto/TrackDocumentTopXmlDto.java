@@ -15,4 +15,7 @@ public class TrackDocumentTopXmlDto {
     @JacksonXmlProperty(localName = "trk")
     private TrackDocumentMiddleXmlDto middle;
 
+    public TrackDocumentMiddleXmlDto getMiddle() {
+        return middle;
+    }
 }

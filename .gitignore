@@ -2,3 +2,7 @@
 
 .gradle
 build
+/consumer-car-tracks-db/consumer-car-tracks-db.iml
+/kafka-fundamentals-parent.iml
+/producer-car-tracks/producer-car-tracks.iml
+out/

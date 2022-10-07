@@ -12,4 +12,8 @@ public class TrackDocumentMiddleXmlDto {
 
     @JacksonXmlProperty(localName = "trkseg")
     private List<PositionXmlDto> positions;
+
+    public List<PositionXmlDto> getPositions() {
+        return positions;
+    }
 }

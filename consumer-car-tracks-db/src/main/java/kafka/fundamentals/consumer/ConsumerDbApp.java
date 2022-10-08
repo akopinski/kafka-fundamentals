@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class ConsumerDbApp {
-    private final static String TOPIC = "car-tracks-raw";
+    private final static String TOPIC = "hello";
     private final static String BOOTSTRAP_SERVERS = "localhost:9093,localhost:9094";
 
     public static void main(String[] args) {

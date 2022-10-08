@@ -6,12 +6,15 @@ import kafka.fundamentals.producer.xmlparser.PositionParser;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.VoidSerializer;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 public class CarProducerApp {
     private final static String TOPIC = "car-tracks-raw";
@@ -31,25 +34,38 @@ public class CarProducerApp {
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        try(var producer = createProducer()) {
-            allPositionsStream().take(10)
+        try (var producer = createProducer()) {
+            allPositionsStream()
                     .doOnNext(System.out::println)
-                    .subscribe();
+                    .subscribe(position -> {
+                        var record = new ProducerRecord<String, Object>(TOPIC, position.getCarId(), position);
 
-//            var record = new ProducerRecord<Void, Object>(TOPIC, CarProducerApp.getGreeting() + " ==> " + i);
+                        try {
+                            producer.send(record).get();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    });
 
+
+            Thread.sleep(7000);
         }
-
-        Thread.sleep(7000);
     }
 
-    private static Producer<Void, Object> createProducer() {
+    private static Producer<String, Object> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaExampleProducer");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, VoidSerializer.class.getName());
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomJsonSerializer.class.getName());
-        props.put(ProducerConfig.ACKS_CONFIG, "-1");
+
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        props.put(ProducerConfig.RETRIES_CONFIG, "100");
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "3");
+
         return new KafkaProducer<>(props);
     }
 }

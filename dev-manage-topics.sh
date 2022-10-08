@@ -2,23 +2,23 @@
 
 set -e
 
-TOOLS_CONTAINER=kafka-fundamentals_tools_1
+TOOLS_CONTAINER=kafka-fundamentals2_tools_1
 
 #min.insync.replicas
 function topicsCreate() {
-  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello
+  docker exec -i $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor 1 --topic hello
 
   TRACKS_REPLICATION_FACTOR=1
-  docker exec -it $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor $TRACKS_REPLICATION_FACTOR --topic car-tracks-raw --config "min.insync.replicas=$TRACKS_REPLICATION_FACTOR"
+  docker exec -i $TOOLS_CONTAINER kafka-topics --create --bootstrap-server kafka1:9092 --partitions 1 --replication-factor $TRACKS_REPLICATION_FACTOR --topic car-tracks-raw --config "min.insync.replicas=$TRACKS_REPLICATION_FACTOR"
 }
 
 function topicsDelete() {
-  docker exec -it $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic hello
-  docker exec -it $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic car-tracks-raw
+  docker exec -i $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic hello
+  docker exec -i $TOOLS_CONTAINER kafka-topics --delete --bootstrap-server kafka1:9092 --topic car-tracks-raw
 }
 
 function topicsList() {
-  docker exec -it $TOOLS_CONTAINER kafka-topics --bootstrap-server kafka1:9092 --list
+  docker exec -i $TOOLS_CONTAINER kafka-topics --bootstrap-server kafka1:9092 --list
 }
 
 if [ "$1" = "create" ]; then
@@ -31,11 +31,11 @@ elif [ "$1" = "recreate" ]; then
 elif [ "$1" = "list" ]; then
   topicsList
 elif [ "$1" = "show" ]; then
-  docker exec -it $TOOLS_CONTAINER kafka-console-consumer --bootstrap-server kafka1:9092 --topic "$2" --property "print.key=true"
+  docker exec -i $TOOLS_CONTAINER kafka-console-consumer --bootstrap-server kafka1:9092 --topic "$2" --property "print.key=true"
 elif [ "$1" = "showAll" ]; then
-  docker exec -it $TOOLS_CONTAINER kafka-console-consumer --bootstrap-server kafka1:9092 --from-beginning --topic "$2" --property "print.key=true"
+  docker exec -i $TOOLS_CONTAINER kafka-console-consumer --bootstrap-server kafka1:9092 --from-beginning --topic "$2" --property "print.key=true"
 elif [ "$1" = "desc" ]; then
-  docker exec -it $TOOLS_CONTAINER kafka-topics --bootstrap-server kafka1:9092 --describe --topic "$2"
+  docker exec -i $TOOLS_CONTAINER kafka-topics --bootstrap-server kafka1:9092 --describe --topic "$2"
 else
   echo "dev-manage-topics.sh: No command specified"
   echo "   create ==> creates all needed topics"

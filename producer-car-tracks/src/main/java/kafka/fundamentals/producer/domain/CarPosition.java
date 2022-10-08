@@ -1,13 +1,7 @@
 package kafka.fundamentals.producer.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-
 import java.time.LocalDateTime;
 
-@Getter
-@ToString
 public class CarPosition {
 
     private String carId;
@@ -26,5 +20,36 @@ public class CarPosition {
         this.longitude = longitude;
         this.elevation = elevation;
         this.time = time;
+    }
+
+    public String getCarId() {
+        return carId;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Double getElevation() {
+        return elevation;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    @Override
+    public String toString() {
+        return "CarPosition{" +
+                "carId='" + carId + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", elevation=" + elevation +
+                ", time=" + time +
+                '}';
     }
 }

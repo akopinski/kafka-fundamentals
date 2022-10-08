@@ -8,7 +8,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.common.serialization.VoidSerializer;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -65,6 +64,9 @@ public class CarProducerApp {
         props.put(ProducerConfig.RETRIES_CONFIG, "100");
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "3");
+
+        props.setProperty("schema.registry.url", "http://127.0.0.1:8081");
+        props.setProperty("specific.avro.reader", "true");
 
         return new KafkaProducer<>(props);
     }

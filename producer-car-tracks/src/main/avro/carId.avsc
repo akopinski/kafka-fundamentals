@@ -1,0 +1,11 @@
+{
+   "type":"record",
+   "name":"CarIdAvro",
+   "namespace":"kafka.fundamentals",
+   "fields":[
+      {
+         "name":"carId",
+         "type":"int"
+      }
+   ]
+}

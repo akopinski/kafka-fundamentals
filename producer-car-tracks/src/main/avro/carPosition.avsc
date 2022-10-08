@@ -1,0 +1,16 @@
+{
+   "type":"record",
+   "name":"CarPositionAvro",
+   "namespace":"kafka.fundamentals",
+   "fields":[
+      {
+         "name":"carId",
+         "type":"string"
+      },
+      {
+         "name":"latitude",
+         "type":"double"
+      }
+   ]
+}
+//https://www.tutorialspoint.com/avro/avro_schemas.htm

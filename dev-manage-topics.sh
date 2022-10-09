@@ -2,7 +2,7 @@
 
 set -e
 
-TOOLS_CONTAINER=kafka-fundamentals2_tools_1
+TOOLS_CONTAINER=kafka-fundamentals_tools_1
 
 #min.insync.replicas
 function topicsCreate() {
